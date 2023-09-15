@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\Api\Auth\AuthController;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
@@ -21,12 +22,14 @@ Route::get('/', function () {
     ]);
 });
 
-Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
+Route::middleware('auth:api')->get('/user', function (Request $request) {
     return $request->user();
 });
 
-Route::get('/leads', function () {
+Route::middleware('auth:api')->get('/leads', function () {
     $users = User::all();
 
     return response()->json($users);
 });
+
+Route::post('/auth', [AuthController::class, 'login']);
