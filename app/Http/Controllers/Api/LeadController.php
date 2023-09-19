@@ -10,6 +10,15 @@ use Illuminate\Support\Facades\Auth;
 
 class LeadController extends Controller
 {
+    public function index()
+    {
+        $leads = Candidate::all();
+
+        $data = LeadDTO::collection($leads);
+
+        return response()->json($data);
+    }
+
     public function store(Request $request)
     {
         $request->validate([
@@ -18,7 +27,10 @@ class LeadController extends Controller
             'owner' => ['required', 'exists:users,id'],
         ]);
 
-        $imagePath = $request->file('source')->store('uploads/images');
+        $image = $request->file('source');
+        $imageName = $image->getClientOriginalName();
+
+        $imagePath = $request->file('source')->storeAs('uploads/images', $imageName);
 
         $lead = Candidate::create([
             'name' => $request->input('name'),
@@ -30,5 +42,17 @@ class LeadController extends Controller
         $data = LeadDTO::from($lead);
 
         return response()->json($data, 200);
+    }
+
+    public function show($id)
+    {
+        try {
+            $candidate = Candidate::findOrFail($id);
+            $data = LeadDTO::from($candidate);
+
+            return response()->json($data, 200);
+        } catch (\Throwable $e) {
+            return response()->json(['errors' => 'No lead found'], 404);
+        }
     }
 }
