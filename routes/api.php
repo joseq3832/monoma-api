@@ -1,8 +1,7 @@
 <?php
 
 use App\Http\Controllers\Api\Auth\AuthController;
-use App\Models\User;
-use Illuminate\Http\Request;
+use App\Http\Controllers\Api\LeadController;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -22,14 +21,11 @@ Route::get('/', function () {
     ]);
 });
 
-Route::middleware('auth:api')->get('/user', function (Request $request) {
-    return $request->user();
-});
-
-Route::middleware('auth:api')->get('/leads', function () {
-    $users = User::all();
-
-    return response()->json($users);
-});
-
 Route::post('/auth', [AuthController::class, 'login']);
+
+Route::middleware('auth.jwt')->group(function () {
+    Route::get('/profile', [AuthController::class, 'profile']);
+    Route::get('/leads', [LeadController::class, 'index']);
+    Route::post('/lead', [LeadController::class, 'store']);
+    Route::get('/lead/{id}', [LeadController::class, 'show']);
+});
