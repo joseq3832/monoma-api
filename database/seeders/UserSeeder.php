@@ -17,7 +17,7 @@ class UserSeeder extends Seeder
         User::factory(100)->create();
 
         User::factory()->create([
-            'username' => 'monoma',
+            'username' => 'tester',
             'role' => 'manager',
         ]);
     }

@@ -18,7 +18,7 @@ class UserFactory extends Factory
     {
         return [
             'username' => fake()->userName(),
-            'password' => '$2y$10$92IXUNpkjO0rOQ5byMi.Ye4oKoEa3Ro9llC/.og/at2.uheWG/igi', // password
+            'password' => bcrypt('PASSWORD'),
             'last_login' => null,
             'is_active' => fake()->boolean(),
             'role' => fake()->randomElement(['manager', 'agent']),
