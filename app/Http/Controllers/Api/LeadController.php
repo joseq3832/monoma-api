@@ -10,9 +10,19 @@ use Illuminate\Support\Facades\Auth;
 
 class LeadController extends Controller
 {
+    public function __construct()
+    {
+        $this->middleware('manager')->except('index');
+    }
+
     public function index()
     {
-        $leads = Candidate::all();
+        $role = auth()->payload()->get('role');
+        $user = auth()->user();
+
+        $leads = Candidate::when($role === 'agent', function ($query) use ($user) {
+            return $query->where('owner', $user->id);
+        })->get();
 
         $data = LeadDTO::collection($leads);
 
@@ -30,7 +40,7 @@ class LeadController extends Controller
         $image = $request->file('source');
         $imageName = $image->getClientOriginalName();
 
-        $imagePath = $request->file('source')->storeAs('uploads/images', $imageName);
+        $imagePath = $image->storeAs('uploads/images', $imageName);
 
         $lead = Candidate::create([
             'name' => $request->input('name'),
@@ -46,13 +56,14 @@ class LeadController extends Controller
 
     public function show($id)
     {
-        try {
-            $candidate = Candidate::findOrFail($id);
-            $data = LeadDTO::from($candidate);
+        $candidate = Candidate::find($id);
 
-            return response()->json($data, 200);
-        } catch (\Throwable $e) {
+        if (! $candidate) {
             return response()->json(['errors' => 'No lead found'], 404);
         }
+
+        $data = LeadDTO::from($candidate);
+
+        return response()->json($data, 200);
     }
 }
