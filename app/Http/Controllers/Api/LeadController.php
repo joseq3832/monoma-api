@@ -63,7 +63,7 @@ class LeadController extends Controller
 
     public function show($id)
     {
-        $cacheKey = 'candidate_'.$id;
+        $cacheKey = 'candidate:'.$id;
 
         $candidate = Cache::remember($cacheKey, 3600, function () use ($id) {
             return Candidate::find($id);
