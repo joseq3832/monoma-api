@@ -14,7 +14,7 @@ class CandidateSeeder extends Seeder
      */
     public function run()
     {
-        $factory = new CandidateFactory();
+        $factory = new CandidateFactory;
 
         $factory->create([
             'name' => 'Mi candidato',

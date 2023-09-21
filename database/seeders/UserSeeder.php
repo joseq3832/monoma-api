@@ -14,7 +14,7 @@ class UserSeeder extends Seeder
      */
     public function run()
     {
-        $factory = new UserFactory();
+        $factory = new UserFactory;
 
         $factory->count(10)->create();
 
