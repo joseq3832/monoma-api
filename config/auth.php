@@ -67,7 +67,7 @@ return [
     'providers' => [
         'users' => [
             'driver' => 'eloquent',
-            'model' => App\Models\User::class,
+            'model' => Src\Infraestructure\Models\User::class,
             'table' => 'users',
             'username' => 'username',
         ],

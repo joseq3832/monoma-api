@@ -2,7 +2,7 @@
 
 namespace Database\Seeders;
 
-use App\Models\Candidate;
+use Database\Factories\CandidateFactory;
 use Illuminate\Database\Seeder;
 
 class CandidateSeeder extends Seeder
@@ -14,7 +14,9 @@ class CandidateSeeder extends Seeder
      */
     public function run()
     {
-        Candidate::factory()->create([
+        $factory = new CandidateFactory();
+
+        $factory->create([
             'name' => 'Mi candidato',
             'source' => 'Fotocasa',
             'owner' => 2,
@@ -22,6 +24,6 @@ class CandidateSeeder extends Seeder
             'created_by' => 1,
         ]);
 
-        Candidate::factory(200)->create();
+        $factory->count(200)->create();
     }
 }

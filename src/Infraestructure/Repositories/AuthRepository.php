@@ -1,13 +1,13 @@
 <?php
 
-namespace App\Http\Controllers\Api\Auth;
+namespace Src\Infraestructure\Repositories;
 
-use App\DTOs\TokenDTO;
-use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
+use Src\Infraestructure\Contracts\IAuthRepository;
+use Src\Infraestructure\DTOs\TokenDTO;
 use Tymon\JWTAuth\Exceptions\JWTException;
 
-class AuthController extends Controller
+final class AuthRepository implements IAuthRepository
 {
     public function login(Request $request)
     {
@@ -34,15 +34,5 @@ class AuthController extends Controller
         $response = TokenDTO::from($reponse);
 
         return response()->json($response);
-    }
-
-    /**
-     * Get the authenticated User.
-     *
-     * @return \Illuminate\Http\JsonResponse
-     */
-    public function profile()
-    {
-        return response()->json(auth()->user());
     }
 }

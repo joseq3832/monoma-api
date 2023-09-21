@@ -1,21 +1,16 @@
 <?php
 
-namespace App\Http\Controllers\Api;
+namespace Src\Infraestructure\Repositories;
 
-use App\DTOs\LeadDTO;
-use App\Http\Controllers\Controller;
-use App\Models\Candidate;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Cache;
+use Src\Infraestructure\Contracts\ILeadRepository;
+use Src\Infraestructure\DTOs\LeadDTO;
+use Src\Infraestructure\Models\Candidate;
 
-class LeadController extends Controller
+final class LeadRepository implements ILeadRepository
 {
-    public function __construct()
-    {
-        $this->middleware('manager')->except('index');
-    }
-
     public function index()
     {
         $role = auth()->payload()->get('role');
@@ -61,7 +56,7 @@ class LeadController extends Controller
         return response()->json($data, 200);
     }
 
-    public function show($id)
+    public function show(int $id)
     {
         $cacheKey = 'candidate:'.$id;
 

@@ -2,7 +2,7 @@
 
 namespace Database\Seeders;
 
-use App\Models\User;
+use Database\Factories\UserFactory;
 use Illuminate\Database\Seeder;
 
 class UserSeeder extends Seeder
@@ -14,14 +14,16 @@ class UserSeeder extends Seeder
      */
     public function run()
     {
-        User::factory(10)->create();
+        $factory = new UserFactory();
 
-        User::factory()->create([
+        $factory->count(10)->create();
+
+        $factory->create([
             'username' => 'tester',
             'role' => 'manager',
         ]);
 
-        User::factory()->create([
+        $factory->create([
             'username' => 'agent',
             'role' => 'agent',
         ]);

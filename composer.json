@@ -29,7 +29,8 @@
         "psr-4": {
             "App\\": "app/",
             "Database\\Factories\\": "database/factories/",
-            "Database\\Seeders\\": "database/seeders/"
+            "Database\\Seeders\\": "database/seeders/",
+            "Src\\": "src/"
         }
     },
     "autoload-dev": {
@@ -63,7 +64,8 @@
         "sort-packages": true,
         "allow-plugins": {
             "pestphp/pest-plugin": true
-        }
+        },
+        "COMPOSER_MIRROR_PATH_REPOS": true
     },
     "minimum-stability": "stable",
     "prefer-stable": true
