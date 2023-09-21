@@ -145,4 +145,56 @@ class LeadTest extends TestCase
                 ],
             ]);
     }
+
+    /** @test */
+    public function it_returns_all_leads_when_authenticated_user_has_role_agent()
+    {
+        $authData = [
+            'username' => 'agent',
+            'password' => 'PASSWORD',
+        ];
+
+        $authResponse = $this->post('/api/auth', $authData);
+
+        $authResponse->assertStatus(200);
+
+        $token = $authResponse->json('data.token');
+
+        $response = $this->withHeaders([
+            'Authorization' => 'Bearer '.$token,
+        ])->json('GET', '/api/leads');
+
+        $response->assertStatus(200);
+
+        $userId = auth()->user()->id;
+
+        $responseData = $response->json('data');
+
+        $leadCount = count(array_filter($responseData, function ($lead) use ($userId) {
+            return $lead['owner'] === $userId;
+        }));
+
+        $this->assertEquals($leadCount, count($responseData));
+    }
+
+    /** @test */
+    public function it_returns_all_leads_when_authenticated_user_has_role_manager()
+    {
+        $authData = [
+            'username' => 'tester',
+            'password' => 'PASSWORD',
+        ];
+
+        $authResponse = $this->post('/api/auth', $authData);
+
+        $authResponse->assertStatus(200);
+
+        $token = $authResponse->json('data.token');
+
+        $response = $this->withHeaders([
+            'Authorization' => 'Bearer '.$token,
+        ])->json('GET', '/api/leads');
+
+        $response->assertStatus(200);
+    }
 }
