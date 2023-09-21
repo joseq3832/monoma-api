@@ -7,6 +7,7 @@ use App\Http\Controllers\Controller;
 use App\Models\Candidate;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Cache;
 
 class LeadController extends Controller
 {
@@ -20,9 +21,13 @@ class LeadController extends Controller
         $role = auth()->payload()->get('role');
         $user = auth()->user();
 
-        $leads = Candidate::when($role === 'agent', function ($query) use ($user) {
-            return $query->where('owner', $user->id);
-        })->get();
+        $cacheKey = ($role === 'manager') ? 'candidates:all' : ('candidates:user_'.$user->id);
+
+        $leads = Cache::remember($cacheKey, 3600, function () use ($role, $user) {
+            return Candidate::when($role === 'agent', function ($query) use ($user) {
+                return $query->where('owner', $user->id);
+            })->get();
+        });
 
         $data = LeadDTO::collection($leads);
 
@@ -49,6 +54,8 @@ class LeadController extends Controller
             'created_by' => Auth::user()->id,
         ]);
 
+        Cache::forget('candidates:*');
+
         $data = LeadDTO::from($lead);
 
         return response()->json($data, 200);
@@ -56,7 +63,11 @@ class LeadController extends Controller
 
     public function show($id)
     {
-        $candidate = Candidate::find($id);
+        $cacheKey = 'candidate_'.$id;
+
+        $candidate = Cache::remember($cacheKey, 3600, function () use ($id) {
+            return Candidate::find($id);
+        });
 
         if (! $candidate) {
             return response()->json(['errors' => 'No lead found'], 404);
